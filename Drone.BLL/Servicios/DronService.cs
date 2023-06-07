@@ -41,33 +41,41 @@ namespace Drone.BLL.Servicios
 
         public async Task<bool> CargarDron(int idMedicamento, int idDron)
         {
-           
-            var dron = await _dronRepository.Obtener(dron => dron.IdDrone == idDron);
-            var medicamento= await _medicamentoRepository.Obtener(med=> med.IdMedicamento== idMedicamento);
-            if (medicamento.Peso > dron.PesoLimite)
+            try
             {
-                throw new TaskCanceledException("Demasiado peso");
+
+                var dron = await _dronRepository.Obtener(dron => dron.IdDrone == idDron);
+                var medicamento = await _medicamentoRepository.Obtener(med => med.IdMedicamento == idMedicamento);
+                if (medicamento.Peso > dron.PesoLimite)
+                {
+                    throw new TaskCanceledException("Demasiado peso");
+                }
+                dron.PesoLimite = dron.PesoLimite - medicamento.Peso;
+                medicamento.IdDrone = idDron;
+
+                bool respuesta = await _dronRepository.Editar(dron);
+
+                if (!respuesta)
+                {
+                    throw new TaskCanceledException("No se pudo editar");
+                }
+
+                bool respuesta1 = await _medicamentoRepository.Editar(medicamento);
+
+                if (!respuesta1)
+                {
+                    throw new TaskCanceledException("No se pudo editar");
+                }
+
+
+                return true;
+
             }
-            dron.PesoLimite= dron.PesoLimite-medicamento.Peso;
-            medicamento.IdDrone= idDron;
-
-            bool respuesta = await _dronRepository.Editar(dron);
-
-            if (!respuesta)
+            catch 
             {
-                throw new TaskCanceledException("No se pudo editar");
+
+                throw;
             }
-
-            bool respuesta1 = await _medicamentoRepository.Editar(medicamento);
-
-            if (!respuesta1)
-            {
-                throw new TaskCanceledException("No se pudo editar");
-            }
-
-
-            return true;
-
         }
 
         public async Task<List<DronDTO>> ObtenerDronesDisponibles()
@@ -75,7 +83,7 @@ namespace Drone.BLL.Servicios
             try
             {
                 var drones_disponbles = await _dronRepository.Consultar(dron => dron.IdEstado == 1);
-                return _mapper.Map<List<DronDTO>>(drones_disponbles);
+                return _mapper.Map<List<DronDTO>>(drones_disponbles.ToList());
             }
             catch 
             {

@@ -10,11 +10,11 @@ namespace Drone.DTO
     {
         public int IdMedicamento { get; set; }
 
-        public string? Nombre { get; set; }
+        public string Nombre { get; set; }
 
         public int Peso { get; set; }
 
-        public string? Codigo { get; set; }
+        public string Codigo { get; set; }
 
         public byte[]? Imagen { get; set; }
     }

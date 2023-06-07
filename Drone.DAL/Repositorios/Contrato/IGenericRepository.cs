@@ -12,7 +12,6 @@ namespace Drone.DAL.Repositorios.Contrato
         Task<TModel> Obtener(Expression<Func<TModel, bool>> predicate);
         Task<TModel> Crear(TModel modelo);
         Task<bool> Editar(TModel modelo);
-        Task<bool> Eliminar(TModel modelo);
         Task<IQueryable<TModel>> Consultar(Expression<Func<TModel, bool>> predicate = null);
 
     }

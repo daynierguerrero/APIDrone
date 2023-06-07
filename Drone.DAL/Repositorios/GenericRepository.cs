@@ -64,22 +64,6 @@ namespace Drone.DAL.Repositorios
             }
         }
 
-        public async Task<bool> Eliminar(TModelo modelo)
-        {
-            try
-            {
-                _dbContext.Set<TModelo>().Remove(modelo);
-                await _dbContext.SaveChangesAsync();
-                return true;
-
-            }
-            catch
-            {
-
-                throw;
-            }
-        }
-
         public async Task<TModelo> Obtener(Expression<Func<TModelo, bool>> predicate)
         {
             try
